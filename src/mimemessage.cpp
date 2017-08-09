@@ -30,6 +30,7 @@ MimeMessage::MimeMessage(bool createAutoMimeContent) :
         this->content = new MimeMultiPart();
     
     autoMimeContentCreated = createAutoMimeContent;
+    replyTo = nullptr;
 }
 
 MimeMessage::~MimeMessage()
@@ -62,6 +63,12 @@ void MimeMessage::setSender(EmailAddress* e)
 {
     this->sender = e;
     e->setParent(this);
+}
+
+void MimeMessage::setReplyTo(EmailAddress *replyTo)
+{
+    this->replyTo = replyTo;
+    replyTo->setParent(this);
 }
 
 void MimeMessage::addRecipient(EmailAddress* rcpt, RecipientType type)
@@ -119,6 +126,15 @@ void MimeMessage::setHeaderEncoding(MimePart::Encoding hEnc)
 const EmailAddress & MimeMessage::getSender() const
 {
     return *sender;
+}
+
+const EmailAddress & MimeMessage::getReplyTo() const
+{
+    if(replyTo == nullptr)
+    {
+        return *sender;
+    }
+    return *replyTo;
 }
 
 const QList<EmailAddress*> & MimeMessage::getRecipients(RecipientType type) const
@@ -182,8 +198,29 @@ QString MimeMessage::toString()
     mime += " <" + sender->getAddress() + ">\r\n";
     /* ---------------------------------- */
 
+    /* ---------- ReplyTo ----------- */
+    if(replyTo != nullptr)
+    {
+        mime = "Reply-To:";
+        if (replyTo->getName() != "")
+        {
+            switch (hEncoding)
+            {
+                case MimePart::Base64:
+                    mime += " =?utf-8?B?" + QByteArray().append(replyTo->getName()).toBase64() + "?=";
+                    break;
+                case MimePart::QuotedPrintable:
+                    mime += " =?utf-8?Q?" + QuotedPrintable::encode(QByteArray().append(replyTo->getName())).replace(' ', "_").replace(':',"=3A") + "?=";
+                    break;
+                default:
+                    mime += " " + replyTo->getName();
+            }
+        }
+        mime += " <" + replyTo->getAddress() + ">\r\n";
+    }
+    /* ---------------------------------- */
 
-    /* ------- Recipients / To ---------- */    
+    /* ------- Recipients / To ---------- */
     mime += "To:";
     QList<EmailAddress*>::iterator it;  int i;
     for (i = 0, it = recipientsTo.begin(); it != recipientsTo.end(); ++it, ++i)

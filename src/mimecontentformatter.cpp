@@ -47,6 +47,10 @@ QString MimeContentFormatter::format(const QString &content, bool quotedPrintabl
                 out.append('=');
                 out.append("\r\n");
                 chars = 1;
+                if(content[i] == '.')
+                {
+                    out.append('.');
+                }
             }
 
         }

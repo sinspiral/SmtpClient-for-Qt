@@ -47,6 +47,7 @@ public:
     /* [2] Getters and Setters */
 
     void setSender(EmailAddress* e);
+    void setReplyTo(EmailAddress* replyTo);
     void addRecipient(EmailAddress* rcpt, RecipientType type = To);
     void addTo(EmailAddress* rcpt);
     void addCc(EmailAddress* rcpt);
@@ -59,6 +60,7 @@ public:
     void setHeaderEncoding(MimePart::Encoding);
 
     const EmailAddress & getSender() const;
+    const EmailAddress & getReplyTo() const;
     const QList<EmailAddress*> & getRecipients(RecipientType type = To) const;
     const QString & getSubject() const;
     const QList<MimePart*> & getParts() const;
@@ -79,6 +81,7 @@ protected:
     /* [4] Protected members */
 
     EmailAddress* sender;
+    EmailAddress* replyTo;
     QList<EmailAddress*> recipientsTo, recipientsCc, recipientsBcc;
     QString subject;
     QString mInReplyTo;

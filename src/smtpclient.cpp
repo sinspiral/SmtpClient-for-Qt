@@ -268,10 +268,12 @@ bool SmtpClient::connectToHost()
     }
     catch (ResponseTimeoutException)
     {
+        emit smtpError(ResponseTimeoutError);
         return false;
     }
     catch (SendMessageTimeoutException)
     {
+        emit smtpError(SendDataTimeoutError);
         return false;
     }
 
@@ -427,7 +429,7 @@ void SmtpClient::quit()
     }
     catch(SmtpClient::SendMessageTimeoutException) 
     {
-	//Manually close the connection to the smtp server if message "QUIT" wasn't received by the smtp server
+        //Manually close the connection to the smtp server if message "QUIT" wasn't received by the smtp server
         if(socket->state() == QAbstractSocket::ConnectedState || socket->state() == QAbstractSocket::ConnectingState || socket->state() == QAbstractSocket::HostLookupState)
             socket->disconnectFromHost();
     }
