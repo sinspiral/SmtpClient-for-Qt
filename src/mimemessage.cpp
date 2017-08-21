@@ -199,9 +199,9 @@ QString MimeMessage::toString()
     /* ---------------------------------- */
 
     /* ---------- ReplyTo ----------- */
-    if(replyTo != nullptr)
+    if(replyTo != nullptr && replyTo->getAddress() != "")
     {
-        mime = "Reply-To:";
+        mime += "Reply-To:";
         if (replyTo->getName() != "")
         {
             switch (hEncoding)

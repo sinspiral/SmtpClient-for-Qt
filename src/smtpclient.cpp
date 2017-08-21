@@ -342,7 +342,7 @@ bool SmtpClient::login(const QString &user, const QString &password, AuthMethod 
     }
     catch (SendMessageTimeoutException)
     {
-	// Send Timeout exceeded
+        // Send Timeout exceeded
         emit smtpError(AuthenticationFailedError);
         return false;
     }
@@ -453,6 +453,9 @@ void SmtpClient::waitForResponse()
             // Save the server's response
             responseText = socket->readLine();
 
+            // Log server response
+            emit smtpServerLog(responseText);
+
             // Extract the respose code from the server's responce (first 3 digits)
             responseCode = responseText.left(3).toInt();
 
@@ -469,6 +472,9 @@ void SmtpClient::waitForResponse()
 
 void SmtpClient::sendMessage(const QString &text)
 {
+    // Log client message
+    emit smtpClientLog(text);
+
     socket->write(text.toUtf8() + "\r\n");
     if (! socket->waitForBytesWritten(sendMessageTimeout))
     {

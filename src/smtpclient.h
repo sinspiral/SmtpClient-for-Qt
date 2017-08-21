@@ -176,6 +176,8 @@ signals:
     /* [7] Signals */
 
     void smtpError(SmtpClient::SmtpError e);
+    void smtpServerLog(QString serverMessage);
+    void smtpClientLog(QString clientMessage);
 
     /* [7] --- */
 
