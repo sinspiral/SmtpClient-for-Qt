@@ -56,7 +56,9 @@ QByteArray QuotedPrintable::decode(const QString &input)
     {
         if (input.at(i).toLatin1() == '=')
         {
-            output.append((hexVal[input.at(++i).toLatin1() - '0'] << 4) + hexVal[input.at(++i).toLatin1() - '0']);
+            char leftOp = hexVal[input.at(++i).toLatin1() - '0'] << 4;
+            char rightOp = hexVal[input.at(++i).toLatin1() - '0'];
+            output.append(leftOp + rightOp);
             i += 2;
         }
         else
